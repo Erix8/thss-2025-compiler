@@ -13,14 +13,14 @@ Token DragonLexer::nextToken()
     return Token(TokenType::EOF_T, "EOF", line);
   }
 
-  if (std::isspace(peek))
+  if (std::isspace(static_cast<char>(peek)))
   {
     return WS();
   }
 
   // TODO: finish me. You need to consider when to call ID()
 
-  if (std::isdigit(peek))
+  if (std::isdigit(static_cast<char>(peek)))
   {
     return NUMBER();
   }
@@ -86,6 +86,28 @@ Token DragonLexer::WS()
 Token DragonLexer::ID()
 {
   // The ID() method should consume an identifier or keyword.
+
+  // If isn't start with a LETTER, just in case.
+  if (!isalpha(peek))
+  {
+    char ch = static_cast<char>(peek);
+    advance();
+    return Token(TokenType::UNKNOWN, std::string(1, ch), line);
+  }
+
+  std::string str;
+  // Start with a LETTER
+  str += static_cast<char>(peek);
+  advance();
+
+  // Followed by LETTER or DIGIT until it isn't
+  while (isalpha(peek) || isdigit(peek))
+  {
+    str += static_cast<char>(peek);
+    advance();
+  }
+  Token tmp = kwTable.getKeyword(str);
+  return (Token(tmp.type, str, line));
 }
 
 Token DragonLexer::NUMBER()

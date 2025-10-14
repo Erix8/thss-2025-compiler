@@ -18,7 +18,11 @@ Token DragonLexer::nextToken()
     return WS();
   }
 
-  // TODO: finish me. You need to consider when to call ID()
+  // You need to consider when to call ID()
+  if (std::isalpha(static_cast<char>(peek)))
+  {
+    return ID();
+  }
 
   if (std::isdigit(static_cast<char>(peek)))
   {

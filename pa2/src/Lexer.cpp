@@ -36,6 +36,28 @@ void Lexer::advance()
 
 void Lexer::resetPos(int newPos)
 {
-  // TODO: finish me. The resetPos(int newPos) method resets 'pos' to newPos
+  // The resetPos(int newPos) method resets 'pos' to newPos
   // and updates 'peek' accordingly.
+
+  int len = input.length();
+
+  if (newPos < 0)
+  {
+    newPos = 0;
+  }
+  else if (newPos > len)
+  {
+    newPos = len;
+  }
+
+  pos = newPos;
+
+  if (newPos < len)
+  {
+    peek = static_cast<unsigned char>(input[newPos]);
+  }
+  else
+  {
+    peek = EOF_CHAR;
+  }
 }

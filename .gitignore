@@ -46,3 +46,6 @@
 .idea/
 .cache/
 build/
+
+# mac
+**/.DS_Store

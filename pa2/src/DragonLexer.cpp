@@ -18,7 +18,7 @@ Token DragonLexer::nextToken()
     return WS();
   }
 
-  // You need to consider when to call ID()
+  // TODO:You need to consider when to call ID()
   if (std::isalpha(static_cast<char>(peek)))
   {
     return ID();
@@ -33,6 +33,36 @@ Token DragonLexer::nextToken()
   switch (cur)
   {
   // TODO: finish me. You need to consider EQ, NE, LT, LE, GT, GE
+  case '=':
+    advance();
+    return Token(TokenType::EQ, "=", line);
+  case '<':
+    advance();
+    int startPos = pos;
+    switch (peek)
+    {
+    case '>':
+      advance();
+      return Token(TokenType::NE, "<>", line);
+    case '=':
+      advance();
+      return Token(TokenType::LE, "<=", line);
+    default:
+      resetPos(startPos);
+      return Token(TokenType::LT, "<", line);
+    }
+  case '>':
+    advance();
+    int startPos = pos;
+    switch (peek)
+    {
+    case '=':
+      advance();
+      return Token(TokenType::GE, ">=", line);
+    default:
+      resetPos(startPos);
+      return Token(TokenType::GT, ">", line);
+    }
   case '(':
     advance();
     return Token(TokenType::L_PAREN, "(", line);
@@ -72,6 +102,9 @@ Token DragonLexer::nextToken()
   case '.':
     advance();
     return Token(TokenType::DOT, ".", line);
+  case '\'':
+    advance();
+    return Token(TokenType::SQUOTE, "\'", line);
   default:
     char ch = static_cast<char>(peek);
     std::string s(1, ch);
@@ -82,14 +115,14 @@ Token DragonLexer::nextToken()
 
 Token DragonLexer::WS()
 {
-  // The WS() method should consume all whitespace characters (spaces, tabs, newlines)
+  // TODO:The WS() method should consume all whitespace characters (spaces, tabs, newlines)
   advance();
   return Token(TokenType::WS, " ");
 }
 
 Token DragonLexer::ID()
 {
-  // The ID() method should consume an identifier or keyword.
+  // TODO:The ID() method should consume an identifier or keyword.
 
   // If isn't start with a LETTER, just in case.
   if (!isalpha(peek))
@@ -116,5 +149,5 @@ Token DragonLexer::ID()
 
 Token DragonLexer::NUMBER()
 {
-  // The NUMBER() method should consume an integer, real number, or scientific notation number.
+  // TODO:The NUMBER() method should consume an integer, real number, or scientific notation number.
 }

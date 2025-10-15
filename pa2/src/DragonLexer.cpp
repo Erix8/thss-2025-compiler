@@ -215,24 +215,26 @@ Token DragonLexer::NUMBER()
   // Check REAL
   if (peek == '.' && !hasDot && !hasExp)
   {
-    numStr += static_cast<char>(peek);
+    int dotPos = pos;
+    std::string tempStr = numStr;
+    tempStr += static_cast<char>(peek);
     advance();
     hasDot = true;
 
-    // Collect digits after .
+    bool hasFractionDigits = false;
     while (peek != EOF_CHAR)
     {
       char c = static_cast<char>(peek);
       if (std::isdigit(c))
       {
-        numStr += c;
+        tempStr += c;
         advance();
+        hasFractionDigits = true;
       }
       else if (c == '\'')
       {
         int startPos = pos;
         advance();
-        // \' must followed by digits
         if (peek == EOF_CHAR || !std::isdigit(static_cast<char>(peek)))
         {
           resetPos(startPos);
@@ -240,13 +242,23 @@ Token DragonLexer::NUMBER()
         }
         else
         {
-          numStr += '\'';
+          tempStr += '\'';
         }
       }
       else
       {
         break;
       }
+    }
+    // If no digits after '.', then it's not REAL
+    if (hasFractionDigits)
+    {
+      numStr = tempStr;
+    }
+    else
+    {
+      resetPos(dotPos);
+      hasDot = false;
     }
   }
 
@@ -299,7 +311,7 @@ Token DragonLexer::NUMBER()
     // If no digits in exp, then not SCI
     if (!hasExpDigits)
     {
-      // 回退到'e'或'E'的位置
+      // reset pos to e/E
       int expStart = numStr.find_last_of("eE");
       resetPos(pos - (numStr.length() - expStart));
       numStr = numStr.substr(0, expStart);

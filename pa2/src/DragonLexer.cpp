@@ -37,30 +37,38 @@ Token DragonLexer::nextToken()
     advance();
     return Token(TokenType::EQ, "=", line);
   case '<':
-    advance();
     int startPos = pos;
-    switch (peek)
+    advance(); // consume '<'
+    if (peek == '>')
     {
-    case '>':
-      advance();
+      advance(); // consume '>'
       return Token(TokenType::NE, "<>", line);
-    case '=':
-      advance();
+    }
+    else if (peek == '=')
+    {
+      advance(); // comsume '='
       return Token(TokenType::LE, "<=", line);
-    default:
+    }
+    else
+    {
+      // reset pos to '<' and re-comsume '<'
       resetPos(startPos);
+      advance();
       return Token(TokenType::LT, "<", line);
     }
   case '>':
-    advance();
     int startPos = pos;
-    switch (peek)
+    advance(); // consume '>'
+    if (peek == '=')
     {
-    case '=':
-      advance();
+      advance(); // consume '='
       return Token(TokenType::GE, ">=", line);
-    default:
+    }
+    else
+    {
+      // reset pos to '>' and re-consume '>'
       resetPos(startPos);
+      advance();
       return Token(TokenType::GT, ">", line);
     }
   case '(':

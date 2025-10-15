@@ -193,12 +193,17 @@ Token DragonLexer::NUMBER()
     }
     else if (c == '\'') // \' can be between digits
     {
-      numStr += c;
+      int startPos = pos;
       advance();
       // \' must followed by digits
       if (peek == EOF_CHAR || !std::isdigit(static_cast<char>(peek)))
       {
+        resetPos(startPos);
         break;
+      }
+      else
+      {
+        numStr += '\'';
       }
     }
     else
@@ -225,11 +230,17 @@ Token DragonLexer::NUMBER()
       }
       else if (c == '\'')
       {
-        numStr += c;
+        int startPos = pos;
         advance();
+        // \' must followed by digits
         if (peek == EOF_CHAR || !std::isdigit(static_cast<char>(peek)))
         {
+          resetPos(startPos);
           break;
+        }
+        else
+        {
+          numStr += '\'';
         }
       }
       else
@@ -266,8 +277,18 @@ Token DragonLexer::NUMBER()
       }
       else if (c == '\'')
       {
-        numStr += c;
+        int startPos = pos;
         advance();
+        // \' must followed by digits
+        if (peek == EOF_CHAR || !std::isdigit(static_cast<char>(peek)))
+        {
+          resetPos(startPos);
+          break;
+        }
+        else
+        {
+          numStr += '\'';
+        }
       }
       else
       {

@@ -163,5 +163,134 @@ Token DragonLexer::ID()
 
 Token DragonLexer::NUMBER()
 {
-  // TODO:The NUMBER() method should consume an integer, real number, or scientific notation number.
+  // TODO:The NUMBER() method should consume an integer,
+  // real number, or scientific notation number.
+
+  // If isn't start with digit, just in case
+  if (!std::isdigit(static_cast<char>(peek)))
+  {
+    char ch = static_cast<char>(peek);
+    advance();
+    return Token(TokenType::UNKNOWN, std::string(1, ch), line);
+  }
+
+  std::string numStr;
+  bool hasDot = false;
+  bool hasExp = false;
+
+  // Collect continuous digits
+  while (peek != EOF_CHAR)
+  {
+    char c = static_cast<char>(peek);
+    if (std::isdigit(c))
+    {
+      numStr += c;
+      advance();
+    }
+    else if (c == '\'') // \' can be between digits
+    {
+      numStr += c;
+      advance();
+      // \' must followed by digits
+      if (peek == EOF_CHAR || !std::isdigit(static_cast<char>(peek)))
+      {
+        break;
+      }
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  // Check REAL
+  if (peek == '.' && !hasDot && !hasExp)
+  {
+    numStr += static_cast<char>(peek);
+    advance();
+    hasDot = true;
+
+    // Collect digits after .
+    while (peek != EOF_CHAR)
+    {
+      char c = static_cast<char>(peek);
+      if (std::isdigit(c))
+      {
+        numStr += c;
+        advance();
+      }
+      else if (c == '\'')
+      {
+        numStr += c;
+        advance();
+        if (peek == EOF_CHAR || !std::isdigit(static_cast<char>(peek)))
+        {
+          break;
+        }
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+
+  // Check SCI
+  if ((peek == 'e' || peek == 'E') && !hasExp)
+  {
+    numStr += static_cast<char>(peek);
+    advance();
+    hasExp = true;
+
+    // Check +/- after eE
+    if (peek == '+' || peek == '-')
+    {
+      numStr += static_cast<char>(peek);
+      advance();
+    }
+
+    // Collect digits in exp
+    bool hasExpDigits = false;
+    while (peek != EOF_CHAR)
+    {
+      char c = static_cast<char>(peek);
+      if (std::isdigit(c))
+      {
+        numStr += c;
+        advance();
+        hasExpDigits = true;
+      }
+      else if (c == '\'')
+      {
+        numStr += c;
+        advance();
+      }
+      else
+      {
+        break;
+      }
+    }
+
+    // If no digits in exp, then not SCI
+    if (!hasExpDigits)
+    {
+      // 回退到'e'或'E'的位置
+      int expStart = numStr.find_last_of("eE");
+      resetPos(pos - (numStr.length() - expStart));
+      numStr = numStr.substr(0, expStart);
+      hasExp = false;
+    }
+  }
+  if (hasExp)
+  {
+    return Token(TokenType::SCI, numStr, line);
+  }
+  else if (hasDot)
+  {
+    return Token(TokenType::REAL, numStr, line);
+  }
+  else
+  {
+    return Token(TokenType::INT, numStr, line);
+  }
 }

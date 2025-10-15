@@ -222,35 +222,40 @@ Token DragonLexer::NUMBER()
     hasDot = true;
 
     bool hasFractionDigits = false;
-    while (peek != EOF_CHAR)
+    // Check digit after '.'
+    if (peek != EOF_CHAR && std::isdigit(static_cast<char>(peek)))
     {
-      char c = static_cast<char>(peek);
-      if (std::isdigit(c))
+      // collect digits after '.'
+      while (peek != EOF_CHAR)
       {
-        tempStr += c;
-        advance();
-        hasFractionDigits = true;
-      }
-      else if (c == '\'')
-      {
-        int startPos = pos;
-        advance();
-        if (peek == EOF_CHAR || !std::isdigit(static_cast<char>(peek)))
+        char c = static_cast<char>(peek);
+        if (std::isdigit(c))
         {
-          resetPos(startPos);
-          break;
+          tempStr += c;
+          advance();
+          hasFractionDigits = true;
+        }
+        else if (c == '\'')
+        {
+          int startPos = pos;
+          advance();
+          if (peek == EOF_CHAR || !std::isdigit(static_cast<char>(peek)))
+          {
+            resetPos(startPos);
+            break;
+          }
+          else
+          {
+            tempStr += '\'';
+          }
         }
         else
         {
-          tempStr += '\'';
+          break;
         }
       }
-      else
-      {
-        break;
-      }
     }
-    // If no digits after '.', then it's not REAL
+
     if (hasFractionDigits)
     {
       numStr = tempStr;

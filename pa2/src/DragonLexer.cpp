@@ -37,6 +37,7 @@ Token DragonLexer::nextToken()
     advance();
     return Token(TokenType::EQ, "=", line);
   case '<':
+  {
     int startPos = pos;
     advance(); // consume '<'
     if (peek == '>')
@@ -56,7 +57,9 @@ Token DragonLexer::nextToken()
       advance();
       return Token(TokenType::LT, "<", line);
     }
+  }
   case '>':
+  {
     int startPos = pos;
     advance(); // consume '>'
     if (peek == '=')
@@ -71,6 +74,7 @@ Token DragonLexer::nextToken()
       advance();
       return Token(TokenType::GT, ">", line);
     }
+  }
   case '(':
     advance();
     return Token(TokenType::L_PAREN, "(", line);

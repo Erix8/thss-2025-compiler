@@ -116,8 +116,14 @@ Token DragonLexer::nextToken()
 Token DragonLexer::WS()
 {
   // TODO:The WS() method should consume all whitespace characters (spaces, tabs, newlines)
-  advance();
-  return Token(TokenType::WS, " ");
+  // consume all the whitespaces at once
+  std::string wsStr;
+  while (peek != EOF_CHAR && std::isspace(static_cast<char>(peek)))
+  {
+    wsStr += static_cast<char>(peek);
+    advance();
+  }
+  return Token(TokenType::WS, wsStr, line);
 }
 
 Token DragonLexer::ID()

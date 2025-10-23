@@ -14,7 +14,14 @@ private:
     void addNewline();                     // 辅助方法：添加换行
 
 public:
-    std::any visit(antlr4::tree::ParseTree *tree) override;
+    std::string getFormattedCode()
+    {
+        return formattedCode;
+    }
+    std::any visit(antlr4::tree::ParseTree *tree) override
+    {
+        return tree->accept(this);
+    }
     std::any visitCompUnit(SysYParser::CompUnitContext *ctx) override;
     std::any visitDecl(SysYParser::DeclContext *ctx) override;
     std::any visitConstDecl(SysYParser::ConstDeclContext *ctx) override;

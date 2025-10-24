@@ -1,6 +1,4 @@
 #pragma once
-#include <string>
-#include <any>
 #include "../src/SysYParserBaseVisitor.h"
 // TODO: Implement SysYFormatter
 
@@ -14,14 +12,8 @@ private:
     void addNewline();                     // 辅助方法：添加换行
 
 public:
-    std::string getFormattedCode()
-    {
-        return formattedCode;
-    }
-    std::any visit(antlr4::tree::ParseTree *tree) override
-    {
-        return tree->accept(this);
-    }
+    std::string getFormattedCode();
+    std::any visit(antlr4::tree::ParseTree *tree) override;
     std::any visitCompUnit(SysYParser::CompUnitContext *ctx) override;
     std::any visitDecl(SysYParser::DeclContext *ctx) override;
     std::any visitConstDecl(SysYParser::ConstDeclContext *ctx) override;

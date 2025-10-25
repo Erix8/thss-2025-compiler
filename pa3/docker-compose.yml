@@ -16,4 +16,5 @@ services:
     # 启动时自动安装所有依赖
     command: >
       bash -c "apt update && 
-               apt install -y build-essential cmake git pkg-config python3 openjdk-11-jdk curl"
+               apt install -y build-essential cmake git pkg-config python3 openjdk-11-jdk curl && 
+               bash"

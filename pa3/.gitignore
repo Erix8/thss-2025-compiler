@@ -4,3 +4,4 @@
 .cache/
 build/
 dist/
+test_block.c

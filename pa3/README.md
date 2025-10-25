@@ -4,8 +4,9 @@
 
 ```bash
 docker-compose up -d
-docker exec -it pa3 bash
+docker attach pa3
 ```
+
 
 切换到pa3目录：
 

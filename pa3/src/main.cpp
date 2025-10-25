@@ -25,8 +25,8 @@ int main(int argc, const char *argv[])
     SysYParser parser(&tokens);                // 创建 SysYParser 对象
     tree::ParseTree *tree = parser.compUnit(); // 获取语法分析树
 
-    SysYFormatter formatter;                                // 创建 SysYFormatter 对象
-    formatter.visit(tree);                                  // 进行代码格式化排版
-    std::cout << formatter.getFormattedCode() << std::endl; // 输出格式化后代码
+    SysYFormatter formatter;                   // 创建 SysYFormatter 对象
+    formatter.visit(tree);                     // 进行代码格式化排版
+    std::cout << formatter.getFormattedCode(); // 输出格式化后代码
     return 0;
 }

@@ -231,7 +231,6 @@ std::any SysYFormatter::visitStmt(SysYParser::StmtContext *ctx)
     }
     else if (ctx->IF())
     {
-        // TODO:缩进规范调整
         if (!isElseIf)
             addIndent();
         isElseIf = false;
@@ -239,8 +238,17 @@ std::any SysYFormatter::visitStmt(SysYParser::StmtContext *ctx)
         visit(ctx->cond());
         formattedCode += ") ";
         if (ctx->stmt(0)->block())
+        {
             isSingleBlock = false;
-        visit(ctx->stmt(0));
+            visit(ctx->stmt(0));
+        }
+        else
+        {
+            addNewline();
+            indentLevel++;
+            visit(ctx->stmt(0));
+            indentLevel--;
+        }
         if (ctx->ELSE())
         {
             addIndent();
@@ -268,14 +276,22 @@ std::any SysYFormatter::visitStmt(SysYParser::StmtContext *ctx)
     }
     else if (ctx->WHILE())
     {
-        // TODO:缩进规范调整
         addIndent();
         formattedCode += "while (";
         visit(ctx->cond());
         formattedCode += ") ";
         if (ctx->stmt(0)->block())
+        {
             isSingleBlock = false;
-        visit(ctx->stmt(0));
+            visit(ctx->stmt(0));
+        }
+        else
+        {
+            addNewline();
+            indentLevel++;
+            visit(ctx->stmt(0));
+            indentLevel--;
+        }
     }
     else if (ctx->BREAK())
     {

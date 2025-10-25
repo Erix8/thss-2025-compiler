@@ -21,16 +21,13 @@ std::string SysYFormatter::getFormattedCode()
 
 std::any SysYFormatter::visitCompUnit(SysYParser::CompUnitContext *ctx)
 {
-    addIndent();
     visitChildren(ctx);
     return nullptr;
 }
 
 std::any SysYFormatter::visitDecl(SysYParser::DeclContext *ctx)
 {
-    addIndent();
     visitChildren(ctx);
-    addNewline();
     return nullptr;
 }
 
@@ -131,7 +128,7 @@ std::any SysYFormatter::visitInitVal(SysYParser::InitValContext *ctx)
         for (int i = 0; i < ctx->initVal().size(); ++i)
         {
             if (i > 0)
-                formattedCode += " ,";
+                formattedCode += ", ";
             visit(ctx->initVal(i));
         }
         formattedCode += "}";
@@ -141,6 +138,7 @@ std::any SysYFormatter::visitInitVal(SysYParser::InitValContext *ctx)
 
 std::any SysYFormatter::visitFuncDef(SysYParser::FuncDefContext *ctx)
 {
+    // TODO:当函数不是第一行时，添加一行空行
     visit(ctx->funcType());
     formattedCode += ctx->IDENT()->getText();
     formattedCode += "(";
@@ -229,12 +227,14 @@ std::any SysYFormatter::visitStmt(SysYParser::StmtContext *ctx)
     else if (ctx->IF())
     {
         // TODO:缩进规范调整
+        addIndent();
         formattedCode += "if (";
         visit(ctx->cond());
         formattedCode += ") ";
         visit(ctx->stmt(0));
         if (ctx->ELSE())
         {
+            addIndent();
             formattedCode += "else ";
             visit(ctx->stmt(1));
         }
@@ -242,6 +242,7 @@ std::any SysYFormatter::visitStmt(SysYParser::StmtContext *ctx)
     else if (ctx->WHILE())
     {
         // TODO:缩进规范调整
+        addIndent();
         formattedCode += "while (";
         visit(ctx->cond());
         formattedCode += ") ";
@@ -249,16 +250,19 @@ std::any SysYFormatter::visitStmt(SysYParser::StmtContext *ctx)
     }
     else if (ctx->BREAK())
     {
+        addIndent();
         formattedCode += "break;";
         addNewline();
     }
     else if (ctx->CONTINUE())
     {
+        addIndent();
         formattedCode += "continue;";
         addNewline();
     }
     else if (ctx->RETURN())
     {
+        addIndent();
         formattedCode += "return";
         if (ctx->exp())
         {
@@ -270,6 +274,7 @@ std::any SysYFormatter::visitStmt(SysYParser::StmtContext *ctx)
     }
     else
     {
+        addIndent();
         if (ctx->exp())
             visit(ctx->exp());
         formattedCode += ";";

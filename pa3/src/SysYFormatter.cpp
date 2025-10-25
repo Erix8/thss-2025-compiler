@@ -138,7 +138,8 @@ std::any SysYFormatter::visitInitVal(SysYParser::InitValContext *ctx)
 
 std::any SysYFormatter::visitFuncDef(SysYParser::FuncDefContext *ctx)
 {
-    // TODO:当函数不是第一行时，添加一行空行
+    if (formattedCode.length())
+        addNewline();
     visit(ctx->funcType());
     formattedCode += ctx->IDENT()->getText();
     formattedCode += "(";
@@ -231,7 +232,9 @@ std::any SysYFormatter::visitStmt(SysYParser::StmtContext *ctx)
     else if (ctx->IF())
     {
         // TODO:缩进规范调整
-        addIndent();
+        if (!isElseIf)
+            addIndent();
+        isElseIf = false;
         formattedCode += "if (";
         visit(ctx->cond());
         formattedCode += ") ";
@@ -244,6 +247,7 @@ std::any SysYFormatter::visitStmt(SysYParser::StmtContext *ctx)
             if (ctx->stmt(1)->IF())
             {
                 formattedCode += "else ";
+                isElseIf = true;
                 visit(ctx->stmt(1));
             }
             else if (ctx->stmt(1)->block())

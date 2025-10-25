@@ -11,6 +11,7 @@ private:
     void addIndent();                    // 辅助方法：添加缩进
     void addNewline();                   // 辅助方法：添加换行
     bool isSingleBlock = true;
+    bool isElseIf = false;
 
 public:
     std::string getFormattedCode();

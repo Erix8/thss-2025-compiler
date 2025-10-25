@@ -249,6 +249,7 @@ std::any SysYFormatter::visitStmt(SysYParser::StmtContext *ctx)
             else if (ctx->stmt(1)->block())
             {
                 isSingleBlock = false;
+                formattedCode += "else ";
                 visit(ctx->stmt(1));
             }
             else

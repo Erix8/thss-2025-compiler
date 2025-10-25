@@ -10,6 +10,7 @@ private:
     const std::string indentUnit = "  "; // 缩进单位（2空格）
     void addIndent();                    // 辅助方法：添加缩进
     void addNewline();                   // 辅助方法：添加换行
+    bool isSingleBlock = true;
 
 public:
     std::string getFormattedCode();

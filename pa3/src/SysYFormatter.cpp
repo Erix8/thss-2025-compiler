@@ -145,6 +145,7 @@ std::any SysYFormatter::visitFuncDef(SysYParser::FuncDefContext *ctx)
     if (ctx->funcFParams())
         visit(ctx->funcFParams());
     formattedCode += ") ";
+    isSingleBlock = false;
     visit(ctx->block());
     return nullptr;
 }
@@ -191,6 +192,9 @@ std::any SysYFormatter::visitFuncFParam(SysYParser::FuncFParamContext *ctx)
 
 std::any SysYFormatter::visitBlock(SysYParser::BlockContext *ctx)
 {
+    if (isSingleBlock)
+        addIndent();
+    isSingleBlock = true;
     formattedCode += "{";
     addNewline();
     indentLevel++;
@@ -231,6 +235,8 @@ std::any SysYFormatter::visitStmt(SysYParser::StmtContext *ctx)
         formattedCode += "if (";
         visit(ctx->cond());
         formattedCode += ") ";
+        if (ctx->stmt(0)->block())
+            isSingleBlock = false;
         visit(ctx->stmt(0));
         if (ctx->ELSE())
         {
@@ -238,6 +244,11 @@ std::any SysYFormatter::visitStmt(SysYParser::StmtContext *ctx)
             if (ctx->stmt(1)->IF())
             {
                 formattedCode += "else ";
+                visit(ctx->stmt(1));
+            }
+            else if (ctx->stmt(1)->block())
+            {
+                isSingleBlock = false;
                 visit(ctx->stmt(1));
             }
             else
@@ -257,6 +268,8 @@ std::any SysYFormatter::visitStmt(SysYParser::StmtContext *ctx)
         formattedCode += "while (";
         visit(ctx->cond());
         formattedCode += ") ";
+        if (ctx->stmt(0)->block())
+            isSingleBlock = false;
         visit(ctx->stmt(0));
     }
     else if (ctx->BREAK())

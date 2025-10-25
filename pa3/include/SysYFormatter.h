@@ -1,19 +1,18 @@
 #pragma once
 #include "../src/SysYParserBaseVisitor.h"
-// TODO: Implement SysYFormatter
+using namespace antlr4;
 
 class SysYFormatter : public SysYParserBaseVisitor
 {
 private:
-    std::string formattedCode;             // 存储格式化后的代码
-    int indentLevel = 0;                   // 缩进级别控制
-    const std::string indentUnit = "    "; // 缩进单位（4空格）
-    void addIndent();                      // 辅助方法：添加缩进
-    void addNewline();                     // 辅助方法：添加换行
+    std::string formattedCode;           // 存储格式化后的代码
+    int indentLevel = 0;                 // 缩进级别控制
+    const std::string indentUnit = "  "; // 缩进单位（2空格）
+    void addIndent();                    // 辅助方法：添加缩进
+    void addNewline();                   // 辅助方法：添加换行
 
 public:
     std::string getFormattedCode();
-    std::any visit(antlr4::tree::ParseTree *tree) override;
     std::any visitCompUnit(SysYParser::CompUnitContext *ctx) override;
     std::any visitDecl(SysYParser::DeclContext *ctx) override;
     std::any visitConstDecl(SysYParser::ConstDeclContext *ctx) override;

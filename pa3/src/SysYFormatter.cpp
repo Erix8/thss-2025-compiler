@@ -235,8 +235,19 @@ std::any SysYFormatter::visitStmt(SysYParser::StmtContext *ctx)
         if (ctx->ELSE())
         {
             addIndent();
-            formattedCode += "else ";
-            visit(ctx->stmt(1));
+            if (ctx->stmt(1)->IF())
+            {
+                formattedCode += "else ";
+                visit(ctx->stmt(1));
+            }
+            else
+            {
+                formattedCode += "else";
+                addNewline();
+                indentLevel++;
+                visit(ctx->stmt(1));
+                indentLevel--;
+            }
         }
     }
     else if (ctx->WHILE())

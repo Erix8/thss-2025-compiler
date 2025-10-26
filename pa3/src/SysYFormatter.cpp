@@ -397,9 +397,9 @@ std::any SysYFormatter::visitUnaryExp(SysYParser::UnaryExpContext *ctx)
 std::any SysYFormatter::visitUnaryOp(SysYParser::UnaryOpContext *ctx)
 {
     if (ctx->PLUS())
-        formattedCode += " + ";
+        formattedCode += "+";
     else if (ctx->MINUS())
-        formattedCode += " - ";
+        formattedCode += "-";
     else if (ctx->NOT())
         formattedCode += "!";
     return nullptr;

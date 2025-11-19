@@ -1,0 +1,7 @@
+build/
+lib/
+dist/
+.vscode/
+.cache/
+.antlr/
+.idea/

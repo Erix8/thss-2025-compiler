@@ -1,0 +1,9 @@
+# example3
+a = 1;
+print a;
+{
+    b = 2;
+    a = b + 1;
+}
+a = b;
+print a;
